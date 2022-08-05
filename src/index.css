@@ -12,6 +12,10 @@
 /* code {
   font-family: "Raleway"
 } */
+*{
+  text-decoration: none;
+  color: white;
+}
 #page{
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
@@ -51,4 +55,10 @@
 
 #loading-icon > p {
   font-weight: bolder;
+}
+#alert-success, #alert-failure{
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  margin: 1rem;
 }

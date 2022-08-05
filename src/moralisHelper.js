@@ -1,3 +1,0 @@
-exports.callContract=(address)=>{
-
-}
