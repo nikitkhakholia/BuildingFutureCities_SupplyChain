@@ -37,7 +37,10 @@
 .card_glow {
   animation: card_glow 1s ease-in-out infinite alternate;
 }
-
+.card-hover-glow:hover{
+  animation: card_glow 1s ease-in-out infinite alternate;
+  zoom: 1;
+}
 @keyframes card_border {
   from {
     border: #23a6d5;
@@ -49,6 +52,9 @@
   }
 }
 .card_border {
+  animation: card_border 1s ease-in-out infinite alternate;
+}
+.card-hover-border:hover{
   animation: card_border 1s ease-in-out infinite alternate;
 }
 
