@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useMoralis } from "react-moralis";
 import { showErrorAlert, runContractFunction } from "../utils";
-import { abi } from "../constants.js";
 
 export default function Owner() {
   const { Moralis } = useMoralis();
