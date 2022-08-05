@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { useMoralis } from "react-moralis";
-import { showErrorAlert, runContractFunction } from "../utils";
+import {
+  showErrorAlert,
+  runContractFunction,
+  showSuccessAlert,
+} from "../utils";
 
 export default function Owner() {
   const { Moralis } = useMoralis();
@@ -8,7 +12,6 @@ export default function Owner() {
 
   return (
     <div>
-      {JSON.stringify(address)}
       <div className="row m-0 p-0">
         <div className="col-3 px-2">
           <div className="rounded bg-dark p-4">
@@ -88,7 +91,11 @@ export default function Owner() {
                         },
                         "transferOwnership"
                       );
-                      console.log(JSON.stringify(res));
+                      if (res.hash) {
+                        showSuccessAlert("User Added Successfully");
+                      } else {
+                        showErrorAlert("Some error occured...");
+                      }
                     }}
                   >
                     TRANSFER
@@ -128,7 +135,11 @@ export default function Owner() {
                         },
                         "addEmployee"
                       );
-                      console.log(JSON.stringify(res));
+                      if (res.hash) {
+                        showSuccessAlert("User Added Successfully");
+                      } else {
+                        showErrorAlert("Some error occured...");
+                      }
                     }}
                   >
                     ADD
@@ -169,7 +180,11 @@ export default function Owner() {
                         },
                         "addSupplier"
                       );
-                      console.log(JSON.stringify(res));
+                      if (res.hash) {
+                        showSuccessAlert("User Added Successfully");
+                      } else {
+                        showErrorAlert("Some error occured...");
+                      }
                     }}
                   >
                     ADD
@@ -207,7 +222,11 @@ export default function Owner() {
                         },
                         "addRetailer"
                       );
-                      console.log(JSON.stringify(res));
+                      if (res.hash) {
+                        showSuccessAlert("User Added Successfully");
+                      } else {
+                        showErrorAlert("Some error occured...");
+                      }
                     }}
                   >
                     ADD
