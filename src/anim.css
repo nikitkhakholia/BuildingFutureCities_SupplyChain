@@ -1,0 +1,72 @@
+/* reveal anim */
+.reveal-from-bottom {
+  position: relative;
+  transform: translateY(150px);
+  opacity: 0;
+  transition: 1s all ease;
+}
+.reveal-from-bottom.active {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* glow anim */
+@keyframes text_glow {
+  from {
+    text-shadow: 0 0 10px rgb(0, 0, 0), 0 0 20px rgb(0, 0, 0), 0 0 30px #ee7752,
+      0 0 40px #ee7752, 0 0 50px #23a6d5, 0 0 60px #23d5ab,
+      0 0 70px rgb(0, 0, 0);
+  }
+  to {
+    text-shadow: 0 0 20px rgb(0, 0, 0), 0 0 30px #ee7752, 0 0 40px #ee7752,
+      0 0 50px #ee7752, 0 0 60px #ee7752, 0 0 70px #ee7752, 0 0 80px #ee7752;
+  }
+}
+.text_glow {
+  animation: text_glow 1s ease-in-out infinite alternate;
+}
+
+@keyframes card_glow {
+  from {
+    box-shadow: 0 0 0rem #23a6d5, 0 0 .5rem #23d5ab, 0 0 1rem #23d5ab;
+  }
+  to {
+    box-shadow: 0 0 .5rem #ee7752, 0 0 1rem #ee7752, 0 0 1.1rem #ee7752;
+  }
+}
+.card_glow {
+  animation: card_glow 1s ease-in-out infinite alternate;
+}
+
+@keyframes card_border {
+  from {
+    border: #23a6d5;
+    border-style: solid;
+  }
+  to {
+    border: #ee7752;
+    border-style: solid;
+  }
+}
+.card_border {
+  animation: card_border 1s ease-in-out infinite alternate;
+}
+
+
+/*gradient button */
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+.grad-btn {
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+}
