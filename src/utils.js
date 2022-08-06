@@ -1,4 +1,3 @@
-
 exports.numberOnly = (element) => {
   var regex = /[^0-9]/gi;
   element.target.value = element.target.value.replace(regex, "");
@@ -34,11 +33,44 @@ exports.hideLoading = () => {
 };
 
 exports.runContractFunction = async (Moralis, params, functn) => {
-  console.log('running contract func');
+  console.log("running contract func");
   let options = {
-    contractAddress: "0x0C965c7f25ac6b01Eb52e5D304216eb5728990B7",
+    contractAddress: "0x9a7a72D25C5cEFb624Ab075F2700961B55d833dF",
     functionName: functn,
     abi: [
+      { inputs: [], name: "Not__AnEmployee", type: "error" },
+      {
+        anonymous: false,
+        inputs: [
+          {
+            indexed: true,
+            internalType: "uint256",
+            name: "barnID",
+            type: "uint256",
+          },
+        ],
+        name: "BarnCreated",
+        type: "event",
+      },
+      {
+        anonymous: false,
+        inputs: [
+          {
+            indexed: true,
+            internalType: "uint256",
+            name: "barnID",
+            type: "uint256",
+          },
+          {
+            indexed: true,
+            internalType: "uint256",
+            name: "batchID",
+            type: "uint256",
+          },
+        ],
+        name: "Batched",
+        type: "event",
+      },
       {
         anonymous: false,
         inputs: [
@@ -63,6 +95,31 @@ exports.runContractFunction = async (Moralis, params, functn) => {
           },
         ],
         name: "EmployeeRemoved",
+        type: "event",
+      },
+      {
+        anonymous: false,
+        inputs: [
+          {
+            indexed: true,
+            internalType: "uint256",
+            name: "barnID",
+            type: "uint256",
+          },
+          {
+            indexed: true,
+            internalType: "uint256",
+            name: "batchID",
+            type: "uint256",
+          },
+          {
+            indexed: true,
+            internalType: "uint256",
+            name: "containerID",
+            type: "uint256",
+          },
+        ],
+        name: "Incontainer",
         type: "event",
       },
       {
@@ -137,6 +194,31 @@ exports.runContractFunction = async (Moralis, params, functn) => {
         type: "event",
       },
       {
+        anonymous: false,
+        inputs: [
+          {
+            indexed: true,
+            internalType: "address",
+            name: "distributor",
+            type: "address",
+          },
+          {
+            indexed: true,
+            internalType: "uint256",
+            name: "barnID",
+            type: "uint256",
+          },
+          {
+            indexed: true,
+            internalType: "uint256",
+            name: "batchID",
+            type: "uint256",
+          },
+        ],
+        name: "WithDistributor",
+        type: "event",
+      },
+      {
         inputs: [{ internalType: "address", name: "account", type: "address" }],
         name: "addEmployee",
         outputs: [],
@@ -158,10 +240,60 @@ exports.runContractFunction = async (Moralis, params, functn) => {
         type: "function",
       },
       {
+        inputs: [
+          { internalType: "address", name: "_farmEmp", type: "address" },
+          { internalType: "string", name: "_farmName", type: "string" },
+          { internalType: "string", name: "_farmLatitude", type: "string" },
+          { internalType: "string", name: "_farmLongitude", type: "string" },
+        ],
+        name: "createBarn",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+      },
+      {
+        inputs: [{ internalType: "uint256", name: "_barnID", type: "uint256" }],
+        name: "createBatch",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+      },
+      {
+        inputs: [],
+        name: "getBarnLength",
+        outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        inputs: [],
+        name: "getBatchesLength",
+        outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        inputs: [],
+        name: "getContainerArrayLength",
+        outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+        stateMutability: "view",
+        type: "function",
+      },
+      {
         inputs: [],
         name: "getOwner",
         outputs: [{ internalType: "address", name: "", type: "address" }],
         stateMutability: "view",
+        type: "function",
+      },
+      {
+        inputs: [
+          { internalType: "uint256", name: "_barnID", type: "uint256" },
+          { internalType: "uint256", name: "_batchID", type: "uint256" },
+        ],
+        name: "inContainer",
+        outputs: [],
+        stateMutability: "nonpayable",
         type: "function",
       },
       {
