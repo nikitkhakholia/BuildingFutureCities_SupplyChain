@@ -6,7 +6,7 @@ const frontEndAbiFile = "contractconstants\\abi.json"
 module.exports = async () => {
     if (process.env.UPDATE_FRONT_END) {
         console.log("Writing to front end...")
-        // updateContractAddresses()
+        updateContractAddresses()
         updateAbi()
         console.log("Front end written!")
     }

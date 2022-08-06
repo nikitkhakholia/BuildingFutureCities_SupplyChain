@@ -12,7 +12,9 @@ contract FarmEmpRole is Ownable {
     event EmployeeAdded(address indexed account);
     event EmployeeRemoved(address indexed account);
 
+    /*State variables */
     Roles.Role private employees;
+    address[] private allEmployees;
 
     modifier onlyEmployee() {
         require(isEmployee(msg.sender), "Caller is not a employeee");
@@ -38,6 +40,15 @@ contract FarmEmpRole is Ownable {
 
     function _removeEmployee(address account) internal {
         employees.removeRole(account);
+        for (uint256 i = 0; i < allEmployees.length; i++) {
+            if (allEmployees[i] == account) {
+                allEmployees[i] = 0x0000000000000000000000000000000000000000;
+            }
+        }
         emit EmployeeRemoved(account);
+    }
+
+    function getAllEmployess() public view returns (address[] memory) {
+        return allEmployees;
     }
 }
