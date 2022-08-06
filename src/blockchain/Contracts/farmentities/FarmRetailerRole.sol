@@ -12,6 +12,8 @@ contract FarmRetailerRole is Ownable {
     event RetailerAdded(address indexed account);
     event RetailerRemoved(address indexed account);
 
+    /*State variables */
+    address[] allRetailers;
     Roles.Role private retailers;
 
     modifier onlyRetailer() {
@@ -29,6 +31,7 @@ contract FarmRetailerRole is Ownable {
 
     function _addRetailer(address account) internal {
         retailers.addRole(account);
+        allRetailers.push(account);
         emit RetailerAdded(account);
     }
 
@@ -38,6 +41,15 @@ contract FarmRetailerRole is Ownable {
 
     function _removeRetailer(address account) internal {
         retailers.removeRole(account);
+        for (uint256 i = 0; i < allRetailers.length; i++) {
+            if (allRetailers[i] == account) {
+                allRetailers[i] = 0x0000000000000000000000000000000000000000;
+            }
+        }
         emit RetailerRemoved(account);
+    }
+
+    function getRetailers() public view returns (address[] memory) {
+        return allRetailers;
     }
 }
