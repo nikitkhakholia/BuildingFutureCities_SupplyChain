@@ -23,8 +23,8 @@
   font-family: 'Raleway';
 }
 .side-spacer {
-  margin-left: 11rem;
-  margin-right: 11rem;
+  margin-left: 5rem;
+  margin-right: 5rem;
 }
 @media only screen and (min-device-width: 320px) and (max-device-width: 480px),
   only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
-import { hideLoading, showLoading, runContractFunction } from "./utils";
+import { hideLoading, showLoading, runContractFunction, showSuccessAlert } from "./utils";
 const logo = require("./Assets/henLogo.gif");
 const loading = require("./Assets/hatchLoading.gif");
 const barnYard = require("./Assets/barnYard.gif");
@@ -53,7 +53,6 @@ export default function Base({ children }) {
   useEffect(async () => {
     await Moralis.enableWeb3();
     if (user) {
-      console.log("......");
       if (
         (await runContractFunction(Moralis, null, "getOwner"))
           .toString()
@@ -82,7 +81,7 @@ export default function Base({ children }) {
               {
                 account: user.ethAddress,
               },
-              "isSupplier"
+              "isDistributor"
             )
           ) {
             console.log("user is supplier");
@@ -108,7 +107,7 @@ export default function Base({ children }) {
         }
       }
     } else {
-      alert("please connect");
+      showSuccessAlert("Please connect to Metamask")
     }
   }, ["x"]);
 
@@ -125,7 +124,7 @@ export default function Base({ children }) {
                   src={logo}
                   alt="LOGO"
                 />
-                deBarn
+                deFarm
               </a>
 
               <button
@@ -173,8 +172,8 @@ export default function Base({ children }) {
                   )}
                   {userRole === "SUPPLIER" && (
                     <li className="nav-item">
-                      <a className="nav-link text-light" href="/supplier">
-                        Supplier
+                      <a className="nav-link text-light" href="/distributor">
+                        Distributor
                       </a>
                     </li>
                   )}

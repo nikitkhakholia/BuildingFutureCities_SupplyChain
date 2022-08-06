@@ -28,7 +28,7 @@ root.render(
           <Route path="/" element={<Home/>} />
           <Route path="/owner" element={<Owner/>} />
           <Route path="/employee" element={<Employee/>} />
-          <Route path="/supplier" element={<Supplier/>} />
+          <Route path="/distributor" element={<Supplier/>} />
           <Route path="/retailer" element={<Retailer/>} />
         </Routes>
       </Base>

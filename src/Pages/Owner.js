@@ -5,17 +5,67 @@ import {
   runContractFunction,
   showSuccessAlert,
 } from "../utils";
-var HighCharts  = require("highcharts")
+// var HighCharts  = require("highcharts")
 
 export default function Owner() {
-  const { Moralis } = useMoralis();
+  const { Moralis, isWeb3Enabled } = useMoralis();
   const [action, setaction] = useState("");
   const [employees, setemployees] = useState([]);
-
-  useEffect(e=>{
-    HighCharts.chart('cont', {})
-  })
-
+  const [suppliers, setsuppliers] = useState([]);
+  const [retailers, setretailers] = useState([]);
+  const [barns, setbarns] = useState([]);
+  const getEmployees = async () => {
+    var employees = await runContractFunction(Moralis, {}, "getAllEmployess");
+    console.log(employees);
+    setemployees(employees);
+  };
+  const getSuppliers = async () => {
+    var employees = await runContractFunction(Moralis, {}, "getAllDistributor");
+    console.log(employees);
+    setsuppliers(employees);
+  };
+  const getRetailers = async () => {
+    var employees = await runContractFunction(Moralis, {}, "getRetailers");
+    console.log(employees);
+    setretailers(employees);
+  };
+  const getBarns = async () => {
+    var employees = await runContractFunction(Moralis, {}, "getBarnsArray");
+    console.log(employees);
+    setbarns(employees);
+  };
+  const deleteSupplier = async (address) => {
+    var employees = await runContractFunction(
+      Moralis,
+      { account: address },
+      "removeDistributor"
+    );
+    console.log(employees);
+    getSuppliers();
+  };
+  const deleteEmp = async (address) => {
+    var employees = await runContractFunction(
+      Moralis,
+      { account: address },
+      "removeEmployee"
+    );
+    console.log(employees);
+    getEmployees();
+  };
+  const deleteRetl = async (address) => {
+    var employees = await runContractFunction(
+      Moralis,
+      { account: address },
+      "removeRetailer"
+    );
+    getRetailers();
+  };
+  window.onload = () => {
+    getEmployees();
+    getSuppliers();
+    getRetailers();
+    getBarns();
+  };
   return (
     <div>
       <div className="row m-0 p-0">
@@ -31,7 +81,15 @@ export default function Owner() {
             >
               Transfer Ownership
             </div>
-            
+            <div
+              className="my-2 py-2"
+              style={{ cursor: "pointer" }}
+              onClick={(e) => {
+                setaction("BN");
+              }}
+            >
+              Barn
+            </div>
             <div
               className="my-2 py-2"
               style={{ cursor: "pointer" }}
@@ -48,7 +106,7 @@ export default function Owner() {
                 setaction("SP");
               }}
             >
-              Supplier
+              Distributor
             </div>
             <div
               className="my-2 py-2"
@@ -59,20 +117,10 @@ export default function Owner() {
             >
               Retailer
             </div>
-            <div
-              className="my-2 py-2"
-              style={{ cursor: "pointer" }}
-              onClick={(e) => {
-                setaction("BN");
-              }}
-            >
-              Barn
-            </div>
           </div>
         </div>
         <div className="col-9 px-2">
-          <div className="col-9 px-2 pt-2">
-          </div>
+          <div className="col-9 px-2 pt-2"></div>
           <div className="rounded bg-dark p-4">
             {!action && (
               <div className="text-center p-4">
@@ -181,8 +229,20 @@ export default function Owner() {
                             );
                             if (res.hash) {
                               showSuccessAlert("User Added Successfully");
+                              document
+                                .getElementById("addemp")
+                                .classList.add("d-none");
+                              document
+                                .getElementById("vemp")
+                                .classList.remove("d-none");
                             } else {
                               showErrorAlert("Some error occured...");
+                              document
+                                .getElementById("addemp")
+                                .classList.add("d-none");
+                              document
+                                .getElementById("vemp")
+                                .classList.remove("d-none");
                             }
                           }}
                         >
@@ -191,7 +251,7 @@ export default function Owner() {
                       </div>
                     </div>
                     <div id="vemp" className="">
-                      <table class="table table-dark">
+                      <table class="table table-dark table-striped">
                         <thead>
                           <tr>
                             <th scope="col">#</th>
@@ -199,11 +259,22 @@ export default function Owner() {
                           </tr>
                         </thead>
                         <tbody>
+                          {employees.length==0 && <div>No Employees Created.</div>}
                           {employees.map((btch) => {
                             return (
                               <tr>
-                                <th scope="row">{btch.batchID}</th>
-                                <td>{btch.qty}</td>
+                                <th scope="row">{btch.toString()}</th>
+                                <td>
+                                  <span
+                                    class=" p-2 rounded-circle material-symbols-rounded "
+                                    style={{ cursor: "pointer" }}
+                                    onClick={(e) => {
+                                      deleteEmp(btch);
+                                    }}
+                                  >
+                                    delete
+                                  </span>
+                                </td>
                               </tr>
                             );
                           })}
@@ -218,7 +289,7 @@ export default function Owner() {
               <div>
                 <div className="row m-0 p-0 align-items-center">
                   <div className="col m-0 p-0">
-                    <h1>Supplier Management</h1>
+                    <h1>Distributor Management</h1>
                   </div>
                   <div className="col-2 text-end">
                     <span
@@ -239,7 +310,7 @@ export default function Owner() {
                   <div className="col m-0 p-0">
                     <div id="asup" className="d-none">
                       <label for="to-address" class="form-label">
-                        Supplier ETH Address
+                        Distributor ETH Address
                       </label>
                       <div class="input-group mb-3 ">
                         <input
@@ -268,12 +339,24 @@ export default function Owner() {
                               {
                                 account: toAddress.value,
                               },
-                              "addSupplier"
+                              "addDistributor"
                             );
                             if (res.hash) {
                               showSuccessAlert("User Added Successfully");
+                              document
+                                .getElementById("asup")
+                                .classList.add("d-none");
+                              document
+                                .getElementById("vsup")
+                                .classList.remove("d-none");
                             } else {
                               showErrorAlert("Some error occured...");
+                              document
+                                .getElementById("asup")
+                                .classList.add("d-none");
+                              document
+                                .getElementById("vsup")
+                                .classList.remove("d-none");
                             }
                           }}
                         >
@@ -282,21 +365,31 @@ export default function Owner() {
                       </div>
                     </div>
                     <div id="vsup" className="">
-                      <table class="table table-dark">
+                      <table class="table table-dark table-striped">
                         <thead>
                           <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Qty</th>
-                            <th scope="col">Date Created</th>
+                            {/* <th scope="col">Qty</th> */}
+                            <th scope="col">Action</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {employees.map((btch) => {
+                          {suppliers.length==0 && <div>No Distributors Created.</div>}
+                          {suppliers.map((btch) => {
                             return (
                               <tr>
-                                <th scope="row">{btch.batchID}</th>
-                                <td>{btch.qty}</td>
-                                <td>{btch.dateCreated}</td>
+                                <th scope="row">{btch}</th>
+                                <td>
+                                  <span
+                                    class=" p-2 rounded-circle material-symbols-rounded "
+                                    style={{ cursor: "pointer" }}
+                                    onClick={(e) => {
+                                      deleteSupplier(btch);
+                                    }}
+                                  >
+                                    delete
+                                  </span>
+                                </td>
                               </tr>
                             );
                           })}
@@ -365,8 +458,20 @@ export default function Owner() {
                             );
                             if (res.hash) {
                               showSuccessAlert("User Added Successfully");
+                              document
+                                .getElementById("art")
+                                .classList.add("d-none");
+                              document
+                                .getElementById("vrt")
+                                .classList.remove("d-none");
                             } else {
                               showErrorAlert("Some error occured...");
+                              document
+                                .getElementById("art")
+                                .classList.add("d-none");
+                              document
+                                .getElementById("vrt")
+                                .classList.remove("d-none");
                             }
                           }}
                         >
@@ -375,21 +480,30 @@ export default function Owner() {
                       </div>
                     </div>
                     <div id="vrt" className="">
-                      <table class="table table-dark">
+                      <table class="table table-dark table-striped">
                         <thead>
                           <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Qty</th>
-                            <th scope="col">Date Created</th>
+                            <th scope="col">Action</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {employees.map((btch) => {
+                          {retailers.length==0 && <div>No Retailers Created.</div>}
+                          {retailers.map((btch) => {
                             return (
                               <tr>
-                                <th scope="row">{btch.batchID}</th>
-                                <td>{btch.qty}</td>
-                                <td>{btch.dateCreated}</td>
+                                <th scope="row">{btch}</th>
+                                <td>
+                                  <span
+                                    class=" p-2 rounded-circle material-symbols-rounded "
+                                    style={{ cursor: "pointer" }}
+                                    onClick={(e) => {
+                                      deleteRetl(btch);
+                                    }}
+                                  >
+                                    delete
+                                  </span>
+                                </td>
                               </tr>
                             );
                           })}
@@ -490,9 +604,21 @@ export default function Owner() {
                               "createBarn"
                             );
                             if (res.hash) {
+                              document
+                                .getElementById("abn")
+                                .classList.add("d-none");
+                              document
+                                .getElementById("vbn")
+                                .classList.remove("d-none");
                               showSuccessAlert("Barn Added Successfully");
                             } else {
                               showErrorAlert("Some error occured...");
+                              document
+                                .getElementById("abn")
+                                .classList.add("d-none");
+                              document
+                                .getElementById("vbn")
+                                .classList.remove("d-none");
                             }
                           }}
                         >
@@ -501,7 +627,7 @@ export default function Owner() {
                       </div>
                     </div>
                     <div id="vbn" className="">
-                      <table class="table table-dark">
+                      <table class="table table-dark table-striped">
                         <thead>
                           <tr>
                             <th scope="col">#</th>
@@ -512,14 +638,29 @@ export default function Owner() {
                           </tr>
                         </thead>
                         <tbody>
-                          {employees.map((btch) => {
+                          {barns.length==0 && <div>No Barns Created.</div>}
+                          {barns.map((btch) => {
                             return (
                               <tr>
-                                <th scope="row">{btch.batchID}</th>
-                                <td>{btch.qty}</td>
-                                <td>{btch.dateCreated}</td>
-                                <td>{btch.dateCreated}</td>
-                                <td>{btch.dateCreated}</td>
+                                <th scope="row">
+                                  {parseInt(btch.barnID.toString()) + 1}
+                                </th>
+                                <td>{btch.farmName}</td>
+                                <td>{btch.farmEmp}</td>
+                                <td>{btch.farmLatitude}</td>
+                                <td>
+                                  {btch.batchState === 0
+                                    ? "FARMING"
+                                    : btch.batchState === 1
+                                    ? "BATCHED"
+                                    : btch.batchState === 2
+                                    ? "IN CONTAINER"
+                                    : btch.batchState === 3
+                                    ? "WITH DISTRIBUTOR"
+                                    : btch.batchState === 4
+                                    ? "WITHRETAILER"
+                                    : "SOLD"}
+                                </td>
                               </tr>
                             );
                           })}
