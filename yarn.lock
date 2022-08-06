@@ -6195,6 +6195,10 @@
   "resolved" "https://registry.npmjs.org/he/-/he-1.2.0.tgz"
   "version" "1.2.0"
 
+"highcharts@github:highcharts/highcharts-dist#nightly":
+  "resolved" "git+ssh://git@github.com/highcharts/highcharts-dist.git#c662d8f81133d4f07b0a0117c05d8683015134bf"
+  "version" "10.2.0-modified"
+
 "history@^5.2.0":
   "integrity" "sha512-ZqaKwjjrAYUYfLG+htGaIIZ4nioX2L70ZUMIFysS3xvBsSG4x/n1V6TXV3N8ZYNuFGlDirFg32T7B6WOUPDYcQ=="
   "resolved" "https://registry.npmjs.org/history/-/history-5.3.0.tgz"
