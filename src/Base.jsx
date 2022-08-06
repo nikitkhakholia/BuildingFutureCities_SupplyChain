@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
-import { hideLoading, showLoading } from "./utils";
-
+import { hideLoading, showLoading, runContractFunction } from "./utils";
 const logo = require("./Assets/henLogo.gif");
 const loading = require("./Assets/hatchLoading.gif");
 const barnYard = require("./Assets/barnYard.gif");
@@ -10,7 +9,6 @@ export default function Base({ children }) {
   //revear animation
   function reveal() {
     var reveals = document.querySelectorAll(".reveal-from-bottom");
-    console.log(reveal.length);
     for (var i = 0; i < reveals.length; i++) {
       var windowHeight = window.innerHeight;
       var elementTop = reveals[i].getBoundingClientRect().top;
@@ -28,16 +26,18 @@ export default function Base({ children }) {
   }, [window.location.href]);
   window.addEventListener("scroll", reveal);
 
+  //state variables
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+  const [userRole, setUserRole] = useState(null);
 
+  //moralis integration
   const { authenticate, isAuthenticated, logout, Moralis } = useMoralis();
-
   const login = async () => {
     if (!isAuthenticated) {
       showLoading();
       await authenticate({ signingMessage: "Log in using Moralis" })
         .then((user) => {
-          // hideLoading();
-          // todo
+          window.localStorage.setItem("user", JSON.stringify(user));
           window.location = "/";
         })
         .catch(function (error) {
@@ -45,12 +45,73 @@ export default function Base({ children }) {
         });
     }
   };
-
   const logOut = async () => {
     await logout();
     console.log("logged out");
   };
-// @ugP!04082022
+
+  useEffect(async () => {
+    await Moralis.enableWeb3();
+    if (user) {
+      console.log("......");
+      if (
+        (await runContractFunction(Moralis, null, "getOwner"))
+          .toString()
+          .toUpperCase() === user.ethAddress.toString().toUpperCase()
+      ) {
+        console.log("user is owner");
+        setUserRole("OWNER")
+      } else {
+        console.log("user is not owner");
+        if (
+          await runContractFunction(
+            Moralis,
+            {
+              account: user.ethAddress,
+            },
+            "isEmployee"
+          )
+        ) {
+          console.log("user is employee");
+          setUserRole("EMPLOYEE");
+        } else {
+          console.log("user is not employee");
+          if (
+            await runContractFunction(
+              Moralis,
+              {
+                account: user.ethAddress,
+              },
+              "isSupplier"
+            )
+          ) {
+            console.log("user is supplier");
+            setUserRole("SUPPLIER");
+          } else {
+            console.log("user is not supplier");
+            if (
+              await runContractFunction(
+                Moralis,
+                {
+                  account: user.ethAddress,
+                },
+                "isRetailer"
+              )
+            ) {
+              console.log("user is retailer");
+              setUserRole("RETAILER");
+            } else {
+              console.log("user is not retailer");
+              //todo
+            }
+          }
+        }
+      }
+    } else {
+      alert("please connect");
+    }
+  }, ["x"]);
+
   return (
     <div className="darky">
       <div id="page">
@@ -96,37 +157,34 @@ export default function Base({ children }) {
                       </div>
                     </li>
                   )}
-                  {/* <li className="nav-item">
-                  <a className="nav-link text-light" href="/owner">
-                    Owner
-                  </a>
-                </li>
-
-                <li className="nav-item">
-                  <a className="nav-link text-light" href="/employee">
-                    Employee
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link text-light" href="/supplier">
-                    Supplier
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link text-light" href="/store">
-                    Store
-                  </a>
-                </li> */}
-                  <li className="nav-item px-2">
-                    <a className="nav-link text-light" href="/support">
-                      Support
-                    </a>
-                  </li>
-                  <li className="nav-item px-2">
-                    <a className="nav-link text-light" href="/aboutus">
-                      About Us
-                    </a>
-                  </li>
+                  {userRole === "OWNER" && (
+                    <li className="nav-item">
+                      <a className="nav-link text-light" href="/owner">
+                        Owner
+                      </a>
+                    </li>
+                  )}
+                  {userRole === "EMPLOYEE" && (
+                    <li className="nav-item">
+                      <a className="nav-link text-light" href="/employee">
+                        Employee
+                      </a>
+                    </li>
+                  )}
+                  {userRole === "SUPPLIER" && (
+                    <li className="nav-item">
+                      <a className="nav-link text-light" href="/supplier">
+                        Supplier
+                      </a>
+                    </li>
+                  )}
+                  {userRole === "RETAILER" && (
+                    <li className="nav-item">
+                      <a className="nav-link text-light" href="/store">
+                        Retailer
+                      </a>
+                    </li>
+                  )}
                   {isAuthenticated && (
                     <li className="nav-item px-2">
                       <a
@@ -144,7 +202,7 @@ export default function Base({ children }) {
           </nav>
         </header>
         <div style={{ minHeight: "60vh" }} className="darky">
-          {isAuthenticated? (
+          {isAuthenticated ? (
             <div className="side-spacer">{children}</div>
           ) : (
             <div className="side-spacer">
@@ -235,7 +293,7 @@ export default function Base({ children }) {
       </svg>
       <div
         id="alert-failure"
-        className="alert alert-danger d-flex align-items-center d-none"
+        className="alert grad-btn d-flex align-items-center d-none"
         role="alert"
       >
         <svg
@@ -251,7 +309,7 @@ export default function Base({ children }) {
       </div>
       <div
         id="alert-success"
-        className="alert alert-success d-flex align-items-center d-none"
+        className="alert grad-btn d-flex align-items-center d-none"
         role="alert"
       >
         <svg
