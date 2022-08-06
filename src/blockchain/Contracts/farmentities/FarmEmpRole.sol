@@ -31,6 +31,7 @@ contract FarmEmpRole is Ownable {
 
     function _addEmployee(address account) internal {
         employees.addRole(account);
+        allEmployees.push(account);
         emit EmployeeAdded(account);
     }
 
