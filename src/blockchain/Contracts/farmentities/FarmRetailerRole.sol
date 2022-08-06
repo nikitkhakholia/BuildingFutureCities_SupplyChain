@@ -13,7 +13,7 @@ contract FarmRetailerRole is Ownable {
     event RetailerRemoved(address indexed account);
 
     /*State variables */
-    address[] allRetailers;
+    address[] private allRetailers;
     Roles.Role private retailers;
 
     modifier onlyRetailer() {

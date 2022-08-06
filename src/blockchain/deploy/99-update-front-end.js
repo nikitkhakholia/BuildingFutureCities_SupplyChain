@@ -1,6 +1,6 @@
 const fs = require("fs")
 const { network } = require("hardhat")
-const frontEndContractsFile = "../contractconstants/contractAddresses.json"
+const frontEndContractsFile = "contractconstants\\contractAddresses.json"
 const frontEndAbiFile = "contractconstants\\abi.json"
 
 module.exports = async () => {
